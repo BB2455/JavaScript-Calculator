@@ -1,0 +1,31 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #3c3c3c;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.calculator-container {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0;
+  background: rgb(240, 158, 50);
+  gap: 1rem;
+  border-radius: 10px;
+  box-shadow: 1px 2px 10px black;
+}
+
+.output-display,
+.input-display {
+  text-align: end;
+}
