@@ -1,10 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 @import url("https://db.onlinewebfonts.com/c/1e670d88b23c7ab956f1829e3828a210?family=Digital-7");
+// Digital font from onlinewebfonts.com: https://www.onlinewebfonts.com/download/1e670d88b23c7ab956f1829e3828a210
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-size: 12px;
+  @media (min-width: 400px) {
+    font-size: 16px;
+  }
 }
 
 body {
@@ -26,12 +31,19 @@ body {
   gap: 1rem;
   border-radius: 10px;
   box-shadow: 1px 2px 10px black;
+  width: 258px;
+  @media (min-width: 400px) {
+    width: 344px;
+  }
 }
 
 .displays-container {
   border-radius: 10px;
   background-color: #333;
   padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .output-display,
@@ -39,6 +51,8 @@ body {
   text-align: end;
   color: white;
   font-family: "Digital-7", sans-serif;
+  word-break: break-all;
+  display: inline-table;
 }
 
 .output-display {
