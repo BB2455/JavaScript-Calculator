@@ -13,6 +13,7 @@ const Calculator = () => {
       setIsComputed(false);
       return;
     }
+    // Check to see if zero needs to be added or not at the beginning.
     if (
       (currentDisplay === "" && value === "0") ||
       (currentDisplay === "0" && value === "0")
@@ -21,10 +22,12 @@ const Calculator = () => {
       setOutputDisplay(outputDisplay + "0");
       return;
     }
+    // If the current number is zero and not a decimal replace with whole number.
     if (currentDisplay === "0" && value !== "0") {
       setCurrentDisplay(value);
       setOutputDisplay(value);
     }
+    // Default add onto current number.
     setCurrentDisplay(currentDisplay + value);
     setOutputDisplay(outputDisplay + value);
   };
@@ -35,12 +38,16 @@ const Calculator = () => {
       currentOperand = prevOutput.toString();
       setIsComputed(false);
     }
+    // Checks if the last digit on the formula is a negative.
     if (currentOperand.slice(currentOperand.length - 1) === "-") {
+      // If negative and the operator is a negative removes the negative.
       if (operator === "-") {
         setOutputDisplay(currentOperand.slice(0, currentOperand.length - 1));
         setCurrentDisplay("");
         return;
       }
+      // Checks if there is an operator before the negative.
+      // Will remove the negative and change the operator to new operator.
       switch (
         currentOperand.slice(
           currentOperand.length - 2,
@@ -58,12 +65,15 @@ const Calculator = () => {
           break;
       }
     }
+    // If the operator is a negative do:
+    // Empty formula insert a negative.
     if (operator === "-") {
       if (currentDisplay === "" && currentOperand === "") {
         setOutputDisplay("-");
         setCurrentDisplay("-");
         return;
       }
+      // Is there a operator already at the end of the formula insert a negative to formula.
       switch (currentOperand.slice(currentOperand.length - 1)) {
         case "+":
           setOutputDisplay(currentOperand + operator);
@@ -81,7 +91,9 @@ const Calculator = () => {
           break;
       }
     }
+    // If operator not a negative and the current formula is empty or just a negative returns.
     if (currentOperand === "" || currentOperand === "-") return;
+    // Current number is empty, checks if there is an operator already there and will replace.
     if (currentDisplay === "") {
       switch (currentOperand.slice(currentOperand.length - 1)) {
         case "-":
@@ -96,7 +108,9 @@ const Calculator = () => {
           break;
       }
     }
+    // If there is a negative no need to add another operator after it.
     if (currentOperand.slice(currentOperand.length - 1) === "-") return;
+    // Default updates formula and resets input to empty string.
     setOutputDisplay(currentOperand + operator);
     setCurrentDisplay("");
   };
@@ -104,6 +118,7 @@ const Calculator = () => {
   const compute = () => {
     setIsComputed(true);
     let computedFormula;
+    // Trys the formula with eval and will error out if output is empty or eval fails.
     try {
       switch (outputDisplay) {
         case "":
@@ -115,12 +130,14 @@ const Calculator = () => {
     } catch {
       computedFormula = "ERROR";
     }
+    // If computedFormula errors outputs error message and returns.
     if (computedFormula === "ERROR") {
       setCurrentDisplay(computedFormula);
       setOutputDisplay(computedFormula);
       setPrevOutput(0);
       return;
     }
+    // Default updates display and sets prevOutput to the computedFormula.
     setCurrentDisplay(computedFormula.toString());
     setOutputDisplay(`${outputDisplay}=${computedFormula}`);
     setPrevOutput(computedFormula);
