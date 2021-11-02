@@ -3,6 +3,7 @@ import React, { useState } from "react";
 const Calculator = () => {
   const [currentDisplay, setCurrentDisplay] = useState("");
   const [outputDisplay, setOutputDisplay] = useState("");
+  const [prevOutput, setPrevOutput] = useState(0);
   const [isComputed, setIsComputed] = useState(false);
 
   const addOperand = (value) => {
@@ -15,8 +16,11 @@ const Calculator = () => {
     if (
       (currentDisplay === "" && value === "0") ||
       (currentDisplay === "0" && value === "0")
-    )
+    ) {
+      setCurrentDisplay("0");
+      setOutputDisplay(outputDisplay + "0");
       return;
+    }
     if (currentDisplay === "0" && value !== "0") {
       setCurrentDisplay(value);
       setOutputDisplay(value);
@@ -26,68 +30,106 @@ const Calculator = () => {
   };
 
   const addOperator = (operator) => {
+    let currentOperand = outputDisplay;
     if (isComputed) {
-      clear();
+      currentOperand = prevOutput.toString();
       setIsComputed(false);
-      return;
     }
-    if (outputDisplay.slice(outputDisplay.length - 1) === "-") {
+    if (currentOperand.slice(currentOperand.length - 1) === "-") {
       if (operator === "-") {
-        setOutputDisplay(outputDisplay.slice(0, outputDisplay.length - 1));
+        setOutputDisplay(currentOperand.slice(0, currentOperand.length - 1));
         setCurrentDisplay("");
         return;
       }
-    }
-    if (operator === "-") {
-      if (currentDisplay === "" && outputDisplay === "") {
-        setOutputDisplay("-");
-        setCurrentDisplay("-");
-        return;
-      }
-      switch (outputDisplay.slice(outputDisplay.length - 1)) {
-        case "+":
-          setOutputDisplay(outputDisplay + operator);
-          setCurrentDisplay("-");
-          return;
-        case "/":
-          setOutputDisplay(outputDisplay + operator);
-          setCurrentDisplay("-");
-          return;
-        case "*":
-          setOutputDisplay(outputDisplay + operator);
-          setCurrentDisplay("-");
-          return;
-        default:
-          break;
-      }
-    }
-    if (outputDisplay === "" || outputDisplay === "-") return;
-    if (currentDisplay === "") {
-      switch (outputDisplay.slice(outputDisplay.length - 1)) {
-        case "-":
+      switch (
+        currentOperand.slice(
+          currentOperand.length - 2,
+          currentOperand.length - 1
+        )
+      ) {
         case "+":
         case "/":
         case "*":
           setOutputDisplay(
-            outputDisplay.slice(0, outputDisplay.length - 1) + operator
+            currentOperand.slice(0, currentOperand.length - 2) + operator
           );
           return;
         default:
           break;
       }
     }
-    if (outputDisplay.slice(outputDisplay.length - 1) === "-") return;
-    setOutputDisplay(outputDisplay + operator);
+    if (operator === "-") {
+      if (currentDisplay === "" && currentOperand === "") {
+        setOutputDisplay("-");
+        setCurrentDisplay("-");
+        return;
+      }
+      switch (currentOperand.slice(currentOperand.length - 1)) {
+        case "+":
+          setOutputDisplay(currentOperand + operator);
+          setCurrentDisplay("-");
+          return;
+        case "/":
+          setOutputDisplay(currentOperand + operator);
+          setCurrentDisplay("-");
+          return;
+        case "*":
+          setOutputDisplay(currentOperand + operator);
+          setCurrentDisplay("-");
+          return;
+        default:
+          break;
+      }
+    }
+    if (currentOperand === "" || currentOperand === "-") return;
+    if (currentDisplay === "") {
+      switch (currentOperand.slice(currentOperand.length - 1)) {
+        case "-":
+        case "+":
+        case "/":
+        case "*":
+          setOutputDisplay(
+            currentOperand.slice(0, currentOperand.length - 1) + operator
+          );
+          return;
+        default:
+          break;
+      }
+    }
+    if (currentOperand.slice(currentOperand.length - 1) === "-") return;
+    setOutputDisplay(currentOperand + operator);
     setCurrentDisplay("");
   };
 
   const compute = () => {
     setIsComputed(true);
+    let computedFormula;
+    try {
+      switch (outputDisplay) {
+        case "":
+          computedFormula = "ERROR";
+          break;
+        default:
+          computedFormula = eval(outputDisplay);
+      }
+    } catch {
+      computedFormula = "ERROR";
+    }
+    if (computedFormula === "ERROR") {
+      setCurrentDisplay(computedFormula);
+      setOutputDisplay(computedFormula);
+      setPrevOutput(0);
+      return;
+    }
+    setCurrentDisplay(computedFormula.toString());
+    setOutputDisplay(`${outputDisplay}=${computedFormula}`);
+    setPrevOutput(computedFormula);
   };
 
   const clear = () => {
     setOutputDisplay("");
     setCurrentDisplay("");
+    setPrevOutput(0);
   };
 
   const buttonClick = (input) => {
@@ -105,6 +147,10 @@ const Calculator = () => {
         addOperator("+");
         break;
       case ".":
+        if (isComputed) {
+          addOperand("0.");
+          return;
+        }
         if (currentDisplay.includes(".")) break;
         if (currentDisplay === "") {
           addOperand("0.");
