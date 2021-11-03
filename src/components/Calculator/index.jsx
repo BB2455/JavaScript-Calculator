@@ -125,6 +125,7 @@ const Calculator = () => {
           computedFormula = "ERROR";
           break;
         default:
+          // eslint-disable-next-line
           computedFormula = eval(outputDisplay);
       }
     } catch {
