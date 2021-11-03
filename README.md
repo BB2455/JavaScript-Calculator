@@ -2,7 +2,7 @@
 JavaScript Calculator Project for the freeCodeCamp Front End Development Libraries.
 
 ## Live Demo
-Coming soon
+https://blairs-calculator.netlify.app/
 
 ## Technologies Used
 - React
